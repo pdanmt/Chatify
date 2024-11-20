@@ -23,7 +23,7 @@ $ git clone https://github.com/pdanmt/Planner
 # Entre na pasta criada
 $ cd Planner
 ```
-Instale as dependências do projeto e o inicialize usando o npm:
+Instale as dependências e inicialize o projeto usando o npm:
 
 ```bash
 $ npm i
