@@ -82,7 +82,7 @@ export function AuthPage() {
             _hover={{ bg: 'primaryFr' }}
             onClick={() => handleSignIn()}
           >
-            <Image src="/public/google-logo.svg" alt="" w="25px" h="25px" />
+            <Image src="/google-logo.svg" alt="" w="25px" h="25px" />
             Entre com sua conta Google
           </Button>
         </Box>
