@@ -52,10 +52,6 @@ export function GetUser(
     } else {
       setUser(user)
     }
-
-    if (user && location.pathname === '/') {
-      setTimeout(() => location.replace(`/user/${user.uid}`), 0)
-    }
   })
 
   return unsubscribe
