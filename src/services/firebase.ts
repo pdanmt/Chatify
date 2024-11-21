@@ -11,6 +11,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -26,10 +27,15 @@ export async function SignIn(navigate: NavigateFunction) {
   await setPersistence(auth, browserLocalPersistence)
 
   await signInWithPopup(auth, provider)
-    .then(({ user }) => {
+    .then(async ({ user }) => {
       if (user.email) {
         const { displayName, email, uid, photoURL } = user
-        setDoc(doc(db, '/users', email), { displayName, email, uid, photoURL })
+        await setDoc(doc(db, '/users', email), {
+          displayName,
+          email,
+          uid,
+          photoURL,
+        })
 
         navigate(`/user/${uid}`)
         toast.success('Login realizado com sucesso!')
@@ -100,4 +106,47 @@ export function GetMessages(
   })
 
   return unsubscribe
+}
+
+export async function GetActiveUserChats(
+  userEmail: string,
+  setActiveUserChats: React.Dispatch<React.SetStateAction<UserInfo[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) {
+  const chatsRef = collection(db, '/chats')
+  await getDocs(chatsRef).then((docs) => {
+    docs.forEach(async (document) => {
+      if (document.id.includes(userEmail)) {
+        const startsWithUserEmail = document.id.startsWith(userEmail)
+        const indexOfUserEmail = document.id.indexOf(userEmail)
+
+        if (startsWithUserEmail) {
+          const email = document.id.slice(userEmail.length, document.id.length)
+          SetActiveUserChats(email, setActiveUserChats)
+        } else {
+          const email = document.id.slice(0, indexOfUserEmail)
+          SetActiveUserChats(email, setActiveUserChats)
+        }
+      }
+    })
+  })
+
+  setLoading(false)
+}
+
+async function SetActiveUserChats(
+  chatUserEmail: string,
+  setActiveUserChats: React.Dispatch<React.SetStateAction<UserInfo[]>>,
+) {
+  const userRef = doc(db, `/users/${chatUserEmail}`)
+
+  await getDoc(userRef).then((doc) => {
+    setActiveUserChats((prev) => {
+      if (prev.find(({ email }) => email === chatUserEmail)) {
+        return prev
+      } else {
+        return [doc.data() as UserInfo, ...prev]
+      }
+    })
+  })
 }

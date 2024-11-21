@@ -1,7 +1,7 @@
-import { Box } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 import { ChatBox } from '../components/chat-box'
-import { FormEvent, useState } from 'react'
-import { ThisUserExists } from '../services/firebase'
+import { FormEvent, useEffect, useState } from 'react'
+import { GetActiveUserChats, ThisUserExists } from '../services/firebase'
 import { toast } from 'sonner'
 import { UserContext } from '../contexts/user-context'
 import { useNavigate } from 'react-router-dom'
@@ -10,9 +10,16 @@ import { FormInput } from '../components/form-input'
 import { LoadingSpinner } from '../components/loading-spinner'
 
 export function UserPage() {
-  const { user } = UserContext()
+  const { user, setActiveUserChats, activeUserChats } = UserContext()
   const [userEmail, setUserEmail] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user?.email) {
+      GetActiveUserChats(user.email, setActiveUserChats, setLoading)
+    }
+  }, [user?.email, setActiveUserChats])
 
   function sortEmailsByLenght() {
     if (user?.email) {
@@ -46,7 +53,7 @@ export function UserPage() {
     }
   }
 
-  if (!user) {
+  if (!user || loading) {
     return <LoadingSpinner />
   }
 
@@ -75,22 +82,35 @@ export function UserPage() {
         />
         <SendButton />
       </Box>
+      <Text
+        fontSize={['1.2rem', '1.35rem', '1.5rem']}
+        fontWeight="bold"
+        textAlign="center"
+      >
+        {activeUserChats.length === 0
+          ? 'Você ainda não possui chats'
+          : 'Seus Chats'}
+      </Text>
       <Box
         w={{ base: '90%', md: '80%', lg: '60%' }}
         display="flex"
         flexDir="column"
         gap="1rem"
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          bg="muted"
-          p="1rem"
-          borderRadius="8px"
-        >
-          <ChatBox displayName="Pedro" photoUrl="" />
-        </Box>
+        {activeUserChats.map(({ displayName, photoURL, uid, email }) => {
+          if (displayName && photoURL && email) {
+            return (
+              <ChatBox
+                displayName={displayName}
+                photoUrl={photoURL}
+                chatUserEmail={email}
+                key={uid}
+              />
+            )
+          }
+
+          return null
+        })}
       </Box>
     </Box>
   )

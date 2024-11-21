@@ -2,13 +2,22 @@ import { Box, Button, Icon, Image, Text } from '@chakra-ui/react'
 import { MessageSquareMore } from 'lucide-react'
 import { SignIn } from '../services/firebase'
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { UserContext } from '../contexts/user-context'
 
 export function AuthPage() {
+  const { user } = UserContext()
   const navigate = useNavigate()
 
   function handleSignIn() {
     SignIn(navigate)
   }
+
+  useEffect(() => {
+    if (user && location.pathname === '/') {
+      navigate(`/user/${user.uid}`)
+    }
+  }, [user, navigate])
 
   return (
     <Box

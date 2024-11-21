@@ -76,6 +76,11 @@ export function ChatPage() {
       minH="90vh"
       m="0 auto"
     >
+      {messages.length === 0 && (
+        <Text color="mutedFr">
+          Sem mensagens nesse chat. Seja o primeiro a mandar um mensagem!
+        </Text>
+      )}
       <Box w="100%" display="flex" flexDir="column" gap="1.3rem">
         {messages.map(
           ({ authorEmail, message, messageId, authorPhotoUrl, createdAt }) => (
@@ -127,7 +132,7 @@ export function ChatPage() {
       <Box
         display="flex"
         gap="1rem"
-        w={['100%', '90%', '80%']}
+        w={['94vw', '90%', '80%']}
         as="form"
         onSubmit={handleSendMessage}
       >
