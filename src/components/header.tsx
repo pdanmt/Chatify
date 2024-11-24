@@ -9,8 +9,12 @@ import {
 import { ThemeContext } from '../contexts/theme-context'
 import { MenuItemComponent } from './menu-item'
 import { SignOut } from '../services/firebase'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../contexts/user-context'
 
 export function Header() {
+  const { user } = UserContext()
+  const navigate = useNavigate()
   const { changeTheme, theme } = ThemeContext()
 
   return (
@@ -29,6 +33,8 @@ export function Header() {
         fontWeight="700"
         alignItems="flex-end"
         fontSize="1.3rem"
+        onClick={() => navigate(`/user/${user?.uid}`)}
+        userSelect="none"
       >
         Chatify <MessageSquareMore />
       </Text>

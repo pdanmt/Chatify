@@ -8,6 +8,7 @@ import { UpdateMessage } from '../services/firebase'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { UserContext } from '../contexts/user-context'
 
 interface MessageProps {
   messageId: string
@@ -30,6 +31,7 @@ export function Message({
   wasDeleted,
   wasEdited,
 }: MessageProps) {
+  const { user } = UserContext()
   const emails = SortedEmail()
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
@@ -61,6 +63,14 @@ export function Message({
         alignItems="flex-start"
         gap="0.5rem"
         flexDir={authorEmail === userEmail ? 'row-reverse' : 'row'}
+        w="auto"
+        _focusWithin={{
+          '.ellipsisButton': {
+            display: 'block',
+          },
+        }}
+        outline="none"
+        tabIndex={0}
       >
         <Image
           alt=""
@@ -89,6 +99,7 @@ export function Message({
             <Text
               wordBreak="break-word"
               color={wasDeleted ? 'mutedFr' : 'inherit'}
+              userSelect="none"
             >
               {message}
             </Text>
@@ -111,7 +122,7 @@ export function Message({
             </Box>
           )}
         </Box>
-        {!wasDeleted && (
+        {!wasDeleted && user?.email === authorEmail && (
           <MessageMenu
             emails={emails}
             messageId={messageId}

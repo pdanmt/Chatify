@@ -16,7 +16,13 @@ export function MessageMenu({
 }: MessageMenuProps) {
   return (
     <Menu>
-      <MenuButton color="mutedFr" m="auto 0" cursor="pointer">
+      <MenuButton
+        color="mutedFr"
+        m="auto 0"
+        cursor="pointer"
+        className="ellipsisButton"
+        display="none"
+      >
         <EllipsisVertical size={21} />
       </MenuButton>
       <MenuList bg="primaryFr" border="none">
