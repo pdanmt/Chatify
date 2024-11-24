@@ -1,14 +1,41 @@
-import { Input, InputProps } from '@chakra-ui/react'
+import { Box, Input, InputProps, Text } from '@chakra-ui/react'
+import { useFormContext } from 'react-hook-form'
 
-export function FormInput({ ...props }: InputProps) {
+interface InputPropsProps extends InputProps {
+  registerName: string
+  hasMaxValue?: boolean
+}
+
+export function FormInput({
+  registerName,
+  hasMaxValue,
+  ...props
+}: InputPropsProps) {
+  const { register, watch } = useFormContext()
+
+  const value = watch('message') || ''
+
   return (
-    <Input
-      outline="1px solid"
-      outlineColor="border"
-      variant="unstyled"
-      p="0.5rem"
-      _focus={{ outline: '2px solid', outlineColor: 'border' }}
-      {...props}
-    />
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      pr="0.5rem"
+      w="100%"
+    >
+      <Input
+        p="0.5rem"
+        border="none"
+        variant="unstyled"
+        maxLength={hasMaxValue ? 150 : undefined}
+        {...props}
+        {...register(registerName)}
+      />
+      {hasMaxValue && (
+        <Text color="mutedFr" fontSize={['0.8rem', '0.8rem', '1rem']}>
+          {value.length}/150
+        </Text>
+      )}
+    </Box>
   )
 }

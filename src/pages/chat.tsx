@@ -1,15 +1,13 @@
-import { Box, Image, Text } from '@chakra-ui/react'
-import { SendButton } from '../components/send-button'
-import { FormEvent, useEffect, useState } from 'react'
+import { Box, Text } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
 import { db } from '../firebase-config'
 import { UserContext } from '../contexts/user-context'
 import { GetMessages } from '../services/firebase'
 import { SortedEmail } from '../utils/sort-emails'
-import { formatDistanceToNow } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { FormInput } from '../components/form-input'
 import { LoadingSpinner } from '../components/loading-spinner'
+import { Message } from '../components/message'
+import { FormBox, inputFormBoxType } from '../components/form-box'
 
 export type MessagesDocType = {
   message: string
@@ -19,12 +17,13 @@ export type MessagesDocType = {
   authorPhotoUrl: string
   authorEmail: string
   messageId: string
+  wasDeleted?: boolean
+  wasEdited?: boolean
 }
 
 export function ChatPage() {
   const { user } = UserContext()
   const [loading, setLoading] = useState<boolean>(true)
-  const [message, setMessage] = useState<string>('')
   const [messages, setMessages] = useState<MessagesDocType[]>([])
   const emails = SortedEmail()
 
@@ -44,8 +43,8 @@ export function ChatPage() {
     }
   }, [userEmail1, userEmail2])
 
-  function handleSendMessage(e: FormEvent) {
-    e.preventDefault()
+  function handleSendMessage(data: inputFormBoxType) {
+    const { message } = data
 
     if (userEmail1 && user) {
       addDoc(collection(db, `/chats/${userEmail1}${userEmail2}/chat`), {
@@ -55,9 +54,10 @@ export function ChatPage() {
         createdAt: new Date().toISOString(),
         authorEmail: user?.email,
         timestamp: new Date(),
+        wasDeleted: false,
+        wasEdited: false,
       })
     }
-    setMessage('')
   }
 
   if (loading) {
@@ -73,77 +73,45 @@ export function ChatPage() {
       justifyContent="space-between"
       p="2rem 0.5rem"
       w={{ base: '80vw', md: '80vw', lg: '50vw' }}
-      minH="90vh"
+      minH="88vh"
       m="0 auto"
     >
       {messages.length === 0 && (
-        <Text color="mutedFr">
-          Sem mensagens nesse chat. Seja o primeiro a mandar um mensagem!
+        <Text color="mutedFr" textAlign="center" w="90vw">
+          Sem mensagens nesse chat. Seja o primeiro a mandar uma mensagem!
         </Text>
       )}
       <Box w="100%" display="flex" flexDir="column" gap="1.3rem">
         {messages.map(
-          ({ authorEmail, message, messageId, authorPhotoUrl, createdAt }) => (
-            <Box
+          ({
+            authorEmail,
+            message,
+            messageId,
+            authorPhotoUrl,
+            createdAt,
+            wasDeleted,
+            wasEdited,
+          }) => (
+            <Message
+              authorEmail={authorEmail}
+              authorPhotoUrl={authorPhotoUrl}
+              createdAt={createdAt}
+              message={message}
+              messageId={messageId}
+              userEmail={user?.email}
+              wasDeleted={wasDeleted}
+              wasEdited={wasEdited}
               key={messageId}
-              display="flex"
-              justifyContent={authorEmail === user?.email ? 'right' : 'left'}
-              flexDir="column"
-              textAlign={authorEmail === user?.email ? 'right' : 'left'}
-            >
-              <Box
-                display="flex"
-                alignItems="flex-start"
-                gap="0.5rem"
-                flexDir={authorEmail === user?.email ? 'row-reverse' : 'row'}
-              >
-                <Image
-                  alt=""
-                  src={authorPhotoUrl}
-                  w="34px"
-                  h="34px"
-                  borderRadius="100%"
-                  border="2px solid transparent"
-                  outline="2px solid"
-                  outlineColor="border"
-                />
-                <Box
-                  display="flex"
-                  alignItems="flex-start"
-                  bg={authorEmail === user?.email ? 'primaryFr' : 'muted'}
-                  w="auto"
-                  maxW="75%"
-                  borderRadius="8px"
-                  gap="1rem"
-                  p="0.5rem 1rem"
-                  textAlign={authorEmail === user?.email ? 'right' : 'left'}
-                >
-                  <Text wordBreak="break-word">{message}</Text>
-                </Box>
-              </Box>
-              <Text as="span" fontSize="0.8rem" color="mutedFr">
-                {formatDistanceToNow(new Date(createdAt), { locale: ptBR })}{' '}
-                atrás
-              </Text>
-            </Box>
+            />
           ),
         )}
       </Box>
-      <Box
-        display="flex"
-        gap="1rem"
+      <FormBox
+        handleSubmitFn={(data) => handleSendMessage(data)}
         w={['94vw', '90%', '80%']}
-        as="form"
-        onSubmit={handleSendMessage}
-      >
-        <FormInput
-          placeholder="Digite uma mensagem"
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
-          isRequired
-        />
-        <SendButton />
-      </Box>
+        registerName="message"
+        hasInputMaxValue
+      />
     </Box>
   )
 }

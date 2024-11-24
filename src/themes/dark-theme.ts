@@ -3,7 +3,7 @@ import { extendTheme } from '@chakra-ui/react'
 export const DarkTheme = extendTheme({
   styles: {
     global: {
-      '*': {
+      body: {
         color: '#fafafa',
       },
 

@@ -16,10 +16,12 @@ import {
   orderBy,
   query,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore'
 import { NavigateFunction } from 'react-router-dom'
 import { toast } from 'sonner'
 import { MessagesDocType } from '../pages/chat'
+import { produce } from 'immer'
 
 export async function SignIn(navigate: NavigateFunction) {
   const provider = new GoogleAuthProvider()
@@ -90,17 +92,36 @@ export function GetMessages(
   const q = query(chatRef, orderBy('timestamp', 'asc'))
 
   const unsubscribe = onSnapshot(q, (snap) => {
-    snap.forEach((doc) => {
-      setMessages((prev) => {
-        if (prev.find(({ messageId }) => messageId === doc.id)) {
-          return prev
-        } else {
-          return [
-            ...prev,
-            { ...doc.data(), messageId: doc.id } as MessagesDocType,
-          ]
-        }
-      })
+    snap.docChanges().forEach((change) => {
+      const docData = change.doc.data() as MessagesDocType
+      const docId = change.doc.id
+
+      if (change.type === 'added') {
+        setMessages((prev) => {
+          if (prev.find(({ messageId }) => messageId === docId)) {
+            return prev
+          } else {
+            return [
+              ...prev,
+              { ...docData, messageId: docId } as MessagesDocType,
+            ]
+          }
+        })
+      } else if (change.type === 'removed') {
+        setMessages((prev) =>
+          prev.filter(({ messageId }) => messageId !== docId),
+        )
+      } else if (change.type === 'modified') {
+        setMessages((prev) => {
+          return produce(prev, (draft) => {
+            const messageIndex = draft.findIndex(
+              ({ messageId }) => messageId === docId,
+            )
+
+            draft[messageIndex] = { ...docData, messageId: docId }
+          })
+        })
+      }
     })
     setLoading(false)
   })
@@ -149,4 +170,42 @@ async function SetActiveUserChats(
       }
     })
   })
+}
+
+export async function DeleteMessage(
+  messageId: string,
+  emails: [string, string] | undefined,
+) {
+  const email1 = emails && emails[0]
+  const email2 = emails && emails[1]
+
+  const messageRef = doc(db, `/chats/${email1}${email2}/chat/${messageId}`)
+
+  try {
+    await updateDoc(messageRef, {
+      message: 'Mensagem excluída',
+      wasDeleted: true,
+    })
+  } catch (error) {
+    toast.error('Erro ao excluir mensagem. Tente novamente. ')
+    console.error(`Erro ao excluir mensagem. Erro: ${error}`)
+  }
+}
+
+export async function UpdateMessage(
+  messageId: string,
+  message: string,
+  emails: [string, string] | undefined,
+) {
+  const email1 = emails && emails[0]
+  const email2 = emails && emails[1]
+
+  const messageRef = doc(db, `/chats/${email1}${email2}/chat/${messageId}`)
+
+  try {
+    await updateDoc(messageRef, { message, wasEdited: true })
+  } catch (error) {
+    toast.error('Erro ao editar mensagem. Tente novamente. ')
+    console.error(`Erro ao editar mensagem. Erro: ${error}`)
+  }
 }

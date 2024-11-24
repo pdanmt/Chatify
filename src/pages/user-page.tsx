@@ -1,17 +1,15 @@
 import { Box, Text } from '@chakra-ui/react'
 import { ChatBox } from '../components/chat-box'
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GetActiveUserChats, ThisUserExists } from '../services/firebase'
 import { toast } from 'sonner'
 import { UserContext } from '../contexts/user-context'
 import { useNavigate } from 'react-router-dom'
-import { SendButton } from '../components/send-button'
-import { FormInput } from '../components/form-input'
 import { LoadingSpinner } from '../components/loading-spinner'
+import { FormBox, inputFormBoxType } from '../components/form-box'
 
 export function UserPage() {
   const { user, setActiveUserChats, activeUserChats } = UserContext()
-  const [userEmail, setUserEmail] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
 
@@ -21,7 +19,7 @@ export function UserPage() {
     }
   }, [user?.email, setActiveUserChats])
 
-  function sortEmailsByLenght() {
+  function sortEmailsByLenght(userEmail: string) {
     if (user?.email) {
       if (user.email <= userEmail) {
         return [user.email, userEmail]
@@ -33,16 +31,16 @@ export function UserPage() {
     }
   }
 
-  async function handleStartAChat(e: FormEvent) {
-    e.preventDefault()
-    if (user?.email) {
+  async function handleStartAChat(data: inputFormBoxType) {
+    const { userEmail } = data
+    if (user?.email && userEmail) {
       if (user.email === userEmail) {
         toast.error(
           'Você não pode iniciar uma conversa usando o seu e-mail logado.',
         )
       } else {
         try {
-          const [userEmail1, userEmail2] = sortEmailsByLenght()
+          const [userEmail1, userEmail2] = sortEmailsByLenght(userEmail)
           await ThisUserExists(userEmail1, userEmail2)
           navigate(`/user/${user.uid}/chat/${userEmail}`)
         } catch (error) {
@@ -66,22 +64,12 @@ export function UserPage() {
       pt="4rem"
       gap="2rem"
     >
-      <Box
-        w={{ sm: '90%', md: '55%', lg: '35%' }}
-        display="flex"
-        alignItems="center"
-        gap="1rem"
-        as="form"
-        onSubmit={handleStartAChat}
-      >
-        <FormInput
-          placeholder="Digite o e-mail de um usuário para iniciar um chat com ele."
-          onChange={(e) => setUserEmail(e.target.value)}
-          value={userEmail}
-          type="email"
-        />
-        <SendButton />
-      </Box>
+      <FormBox
+        handleSubmitFn={(data) => handleStartAChat(data)}
+        w={['90%', '55%', '35%']}
+        registerName="userEmail"
+        inputType="email"
+      />
       <Text
         fontSize={['1.2rem', '1.35rem', '1.5rem']}
         fontWeight="bold"

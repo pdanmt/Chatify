@@ -43,7 +43,7 @@ export function Header() {
             {!theme && <ToggleRightIcon size={21} />}
           </MenuItemComponent>
           <MenuItemComponent onClick={() => SignOut()} color="destructive">
-            Sair da conta <LogOut size={21} color="#ed4545" />
+            Sair da conta <LogOut size={21} />
           </MenuItemComponent>
         </MenuList>
       </Menu>

@@ -9,8 +9,12 @@ export function AuthPage() {
   const { user } = UserContext()
   const navigate = useNavigate()
 
-  function handleSignIn() {
-    SignIn(navigate)
+  async function handleSignIn() {
+    await SignIn(navigate)
+
+    if (Notification.permission !== 'granted') {
+      await Notification.requestPermission()
+    }
   }
 
   useEffect(() => {
