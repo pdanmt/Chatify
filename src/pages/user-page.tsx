@@ -7,9 +7,11 @@ import { UserContext } from '../contexts/user-context'
 import { useNavigate } from 'react-router-dom'
 import { LoadingSpinner } from '../components/loading-spinner'
 import { FormBox, inputFormBoxType } from '../components/form-box'
+import { UserInfo } from 'firebase/auth'
 
 export function UserPage() {
-  const { user, setActiveUserChats, activeUserChats } = UserContext()
+  const { user } = UserContext()
+  const [activeUserChats, setActiveUserChats] = useState<UserInfo[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
 
@@ -69,6 +71,7 @@ export function UserPage() {
         w={['90%', '55%', '35%']}
         registerName="userEmail"
         inputType="email"
+        inputPlaceholder="Digite o email de um usuário"
       />
       <Text
         fontSize={['1.2rem', '1.35rem', '1.5rem']}

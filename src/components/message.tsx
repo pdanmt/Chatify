@@ -127,6 +127,7 @@ export function Message({
             emails={emails}
             messageId={messageId}
             setIsEditing={setIsEditing}
+            message={message}
           />
         )}
       </Box>

@@ -10,9 +10,7 @@ import { GetUser } from '../services/firebase'
 
 interface UserContextBody {
   user: UserInfo | null
-  activeUserChats: UserInfo[]
   setUser: React.Dispatch<React.SetStateAction<UserInfo | null>>
-  setActiveUserChats: React.Dispatch<React.SetStateAction<UserInfo[]>>
 }
 
 interface UserContextProviderProps {
@@ -23,7 +21,6 @@ const userContext = createContext({} as UserContextBody)
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
   const [user, setUser] = useState<UserInfo | null>(null)
-  const [activeUserChats, setActiveUserChats] = useState<UserInfo[]>([])
 
   useEffect(() => {
     const unsubscribeGetUser = GetUser(setUser)
@@ -32,9 +29,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   }, [])
 
   return (
-    <userContext.Provider
-      value={{ user, setUser, activeUserChats, setActiveUserChats }}
-    >
+    <userContext.Provider value={{ user, setUser }}>
       {children}
     </userContext.Provider>
   )

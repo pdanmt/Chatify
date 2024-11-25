@@ -13,6 +13,7 @@ export type inputFormBoxType = {
 interface FormBoxProps extends BoxProps {
   handleSubmitFn: (data: inputFormBoxType) => void
   registerName: string
+  inputPlaceholder: string
   inputType?: string
   hasInputMaxValue?: boolean
 }
@@ -22,6 +23,7 @@ export function FormBox({
   registerName,
   hasInputMaxValue,
   inputType,
+  inputPlaceholder,
   ...props
 }: FormBoxProps) {
   const formBoxSchema = z.object({
@@ -57,7 +59,7 @@ export function FormBox({
         {...props}
       >
         <FormInput
-          placeholder="Digite uma mensagem"
+          placeholder={inputPlaceholder}
           isRequired
           registerName={registerName}
           hasMaxValue={hasInputMaxValue}

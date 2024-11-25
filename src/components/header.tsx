@@ -1,6 +1,5 @@
 import { Box, Menu, MenuButton, MenuList, Text } from '@chakra-ui/react'
 import {
-  LogOut,
   Menu as MenuIcon,
   MessageSquareMore,
   ToggleLeftIcon,
@@ -8,9 +7,9 @@ import {
 } from 'lucide-react'
 import { ThemeContext } from '../contexts/theme-context'
 import { MenuItemComponent } from './menu-item'
-import { SignOut } from '../services/firebase'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/user-context'
+import { ModalComponent } from './modal-component'
 
 export function Header() {
   const { user } = UserContext()
@@ -35,6 +34,7 @@ export function Header() {
         fontSize="1.3rem"
         onClick={() => navigate(`/user/${user?.uid}`)}
         userSelect="none"
+        cursor="pointer"
       >
         Chatify <MessageSquareMore />
       </Text>
@@ -48,9 +48,7 @@ export function Header() {
             {theme && <ToggleLeftIcon size={21} />}
             {!theme && <ToggleRightIcon size={21} />}
           </MenuItemComponent>
-          <MenuItemComponent onClick={() => SignOut()} color="destructive">
-            Sair da conta <LogOut size={21} />
-          </MenuItemComponent>
+          <ModalComponent toDeleteAMessage={false} />
         </MenuList>
       </Menu>
     </Box>

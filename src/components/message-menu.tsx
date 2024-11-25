@@ -1,10 +1,11 @@
 import { Menu, MenuButton, MenuList, Text } from '@chakra-ui/react'
-import { EllipsisVertical, PencilLine, Trash } from 'lucide-react'
-import { DeleteMessage } from '../services/firebase'
+import { EllipsisVertical, PencilLine } from 'lucide-react'
 import { MenuItemComponent } from './menu-item'
+import { ModalComponent } from './modal-component'
 
 interface MessageMenuProps {
   messageId: string
+  message: string
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
   emails: [string, string] | undefined
 }
@@ -13,6 +14,7 @@ export function MessageMenu({
   emails,
   messageId,
   setIsEditing,
+  message,
 }: MessageMenuProps) {
   return (
     <Menu>
@@ -35,15 +37,13 @@ export function MessageMenu({
           <Text>Editar mensagem</Text>
           <PencilLine size={19} />
         </MenuItemComponent>
-        <MenuItemComponent
-          fontSize="0.86rem"
-          bg="primaryFr"
-          color="destructive"
-          onClick={() => DeleteMessage(messageId, emails)}
-        >
-          <Text>Deletar mensagem</Text>
-          <Trash size={19} />
-        </MenuItemComponent>
+
+        <ModalComponent
+          emails={emails}
+          message={message}
+          messageId={messageId}
+          toDeleteAMessage
+        />
       </MenuList>
     </Menu>
   )

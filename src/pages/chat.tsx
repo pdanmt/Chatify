@@ -111,6 +111,7 @@ export function ChatPage() {
         w={['94vw', '90%', '80%']}
         registerName="message"
         hasInputMaxValue
+        inputPlaceholder="Digite uma mensagem"
       />
     </Box>
   )
