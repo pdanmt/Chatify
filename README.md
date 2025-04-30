@@ -21,10 +21,10 @@ Para iniciar o projeto por conta própria ou modificá-lo, siga os seguintes pas
 
 ```bash
 # Faça o clone do projeto
-$ git clone https://github.com/pdanmt/Planner
+$ git clone https://github.com/pdanmt/Chatify
 
 # Entre na pasta criada
-$ cd Planner
+$ cd Chatify
 ```
 Instale as dependências e inicialize o projeto usando o npm:
 
