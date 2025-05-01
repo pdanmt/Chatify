@@ -47,9 +47,6 @@ export function GetUser(
     if (!user && location.pathname !== '/login') {
       setTimeout(() => location.replace('/login'), 0)
     } else if (user) {
-      if (location.pathname !== '/') {
-        setTimeout(() => location.replace('/'), 0)
-      }
       setUser(user as UserInfo)
     }
   })
