@@ -27,7 +27,8 @@ const config = defineConfig({
     
             fontSizes: {
                 sm: { value: '0.875rem' },
-                md: { value: '1rem' },
+                normal: { value: '1rem' },
+                md: { value: '1.125rem' },
                 lg: { value: '1.25rem' },
                 xl: { value: '1.5rem' },
                 '2xl': { value: '3.5rem' },

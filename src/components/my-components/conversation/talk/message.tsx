@@ -1,3 +1,5 @@
+'use client'
+
 import { UseConversationContext, UseUserContext } from "@/context";
 import { DeleteMessage } from "@/services/firebase/firebase";
 import { Flex, Menu, Icon, Portal, Text } from "@chakra-ui/react";

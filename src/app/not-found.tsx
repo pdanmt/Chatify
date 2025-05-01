@@ -11,7 +11,7 @@ export default function NotFound() {
             textAlign='center'
             justify='center'
         >
-            <Text fontSize='1.5rem'>
+            <Text fontSize='xl'>
                 Opa... como você veio parar aqui?
             </Text>
             <Link

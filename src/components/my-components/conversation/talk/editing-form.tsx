@@ -1,3 +1,5 @@
+'use client'
+
 import { EditMessage } from "@/services/firebase/firebase";
 import { Box, Input } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";

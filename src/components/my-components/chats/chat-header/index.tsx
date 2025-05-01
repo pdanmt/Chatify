@@ -1,3 +1,5 @@
+'use client'
+
 import { Flex, Icon } from "@chakra-ui/react";
 import { FaMoon } from "react-icons/fa";
 import { Avatar } from "../../avatar";

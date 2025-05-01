@@ -4,7 +4,6 @@ import { UseConversationContext, UseUserContext } from "@/context";
 import { CreateChatIfThatUserExist } from "@/services/firebase/firebase";
 import { Button, Flex, Input } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserInfo } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { toast } from "react-toastify";
@@ -12,7 +11,7 @@ import { z } from "zod";
 
 export function Search() {
     const { user } = UseUserContext()
-    const { setActiveChat } = UseConversationContext()
+    const { setActiveChat, setUserChats, userChats } = UseConversationContext()
 
     const searchSchema = z.object({
         email: z.string()
@@ -28,8 +27,15 @@ export function Search() {
                 toast.error('Use um e-mail diferente do seu.')
             } else {
                 try {
-                    const userChatInfos = await CreateChatIfThatUserExist(user.email, email)
-                    setActiveChat(userChatInfos)
+                    const thisChatExists = userChats.find((props) => props.email === email)
+                    if (thisChatExists) {
+                        setActiveChat(thisChatExists)
+                    } else {
+                        const userChatInfos = await CreateChatIfThatUserExist(user.email, email)
+                        setActiveChat(userChatInfos)
+                        setUserChats((prev) => [...prev, userChatInfos])
+                    }
+
                     reset()
                 } catch (error) {
                     toast.error('Erro ao encontrar usuário.')
@@ -53,7 +59,7 @@ export function Search() {
                 borderRadius='8px 0 0 8px'
                 type='email'
                 required
-                placeholder='Digite um email para iniciar uma conversa'
+                placeholder='Crie ou busque uma conversa'
                 _placeholder={{ color: 'gray.300' }}
                 _focus={{ outline: 'none' }}
                 {...register('email')}

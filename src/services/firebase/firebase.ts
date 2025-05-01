@@ -4,7 +4,18 @@ import {
     browserLocalPersistence,
     signInWithPopup,
 } from "firebase/auth"
-import { setDoc, doc, getDoc, collection, getDocs, addDoc, orderBy, query, onSnapshot, updateDoc } from "firebase/firestore"
+import {
+  setDoc,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  addDoc,
+  orderBy,
+  query,
+  onSnapshot,
+  updateDoc
+} from "firebase/firestore"
 import { auth, db } from "./firebase-config"
 import { toast } from "react-toastify"
 import { sortEmailsByLenght } from "@/utils/sort-emails"
@@ -67,7 +78,6 @@ export async function CreateChatIfThatUserExist(
 
   if (!chatUser.exists()) {
     toast.error('O usuário não existe.')
-    throw new Error('O usuário não existe.')
   } else if (!chatExists) {
     setDoc((chatRef), {})
   }

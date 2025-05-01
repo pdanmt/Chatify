@@ -17,12 +17,12 @@ export default function Error({ error }: { error: Error }) {
             textAlign='center'
         >
             <Text
-                fontSize={['titleMd', 'titleMd', 'titleLg']}
+                fontSize={['lg', 'lg', 'xl']}
                 color='gray.100'
             >
                 Opa... algo deu errado, tente recarregar a página!
             </Text>
-            <Text fontSize='subtitle' color='red'>
+            <Text fontSize='sm' color='red'>
                 [ERRO]: {error.message}
             </Text>
         </Flex>

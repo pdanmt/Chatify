@@ -21,8 +21,8 @@ export function ChatBox() {
                     _hover={{ transition: '0.15s', bg: 'gray.500' }}
                     onClick={() => setActiveChat(props)}
                 >
-                    <Flex align='center' gap='1rem'>
-                        <Box w='50px' h='50px' pos='relative'>
+                    <Flex align='center' gap='0.7rem'>
+                        <Box w='45px' h='45px' pos='relative'>
                             <Image
                                 src={props.photoURL}
                                 alt=''
@@ -31,15 +31,15 @@ export function ChatBox() {
                             />
                         </Box>
                         <Box>
-                            <Text color='gray.100' fontSize='lg'>
+                            <Text color='gray.100' fontSize='md'>
                                 {props.displayName}
                             </Text>
-                            <Text color='gray.300' fontSize='md'>
+                            {/* <Text color='gray.300' fontSize='md'>
                                 message
-                            </Text>
+                            </Text> */}
                         </Box>
                     </Flex>
-                    <Box lineHeight='2'>
+                    {/* <Box lineHeight='2'>
                         <Text color='gray.300'>08:21</Text>
                         <Flex
                             bg='green'
@@ -55,7 +55,7 @@ export function ChatBox() {
                         >
                             5
                         </Flex>
-                    </Box>
+                    </Box> */}
                 </Flex>
             ))}
         </>
